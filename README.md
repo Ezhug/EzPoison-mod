@@ -1,4 +1,6 @@
-# EzPoison (Fork by Quad Crown)
+# EzPoison / Added "Shows big icon in center if weapon has no poison"
+
+
 EzPoison is a World of Warcraft addon that provides a convenient GUI to manage and apply poisons, sharpening stones, and wizard/mana oils to your weapons. This fork includes additional tweaks and quality-of-life improvements.
 
 ## Features
