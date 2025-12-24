@@ -1004,7 +1004,7 @@ end
 
 
 -------------------------------------------------------------------------------
--- EzPoison: Red Cross (Based on PoisonCheck)
+-- EzPoison: Red Cross 
 -------------------------------------------------------------------------------
 
 -- 1. Создаем фрейм
@@ -1015,7 +1015,7 @@ EzCross:SetPoint("CENTER", 0, 0) -- Строго по центру экрана
 EzCross:SetFrameStrata("HIGH")   -- Поверх других окон
 EzCross:Hide() -- Скрыт по умолчанию
 
--- 2. Текстура (Красный крест "Отказ от лута" из твоего примера)
+-- 2. Текстура (Красный крест "Отказ от лута" )
 EzCross.texture = EzCross:CreateTexture(nil, "OVERLAY")
 EzCross.texture:SetAllPoints()
 EzCross.texture:SetTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
@@ -1082,4 +1082,5 @@ end)
 
 -- Проверка при загрузке
 DEFAULT_CHAT_FRAME:AddMessage("EzPoison: Red Cross module loaded.")
+
 CheckPoisonLogic()
