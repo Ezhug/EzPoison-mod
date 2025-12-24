@@ -1001,3 +1001,85 @@ function EZP:GetValidPoisonIndices()
     end
 end
 
+
+
+-------------------------------------------------------------------------------
+-- EzPoison: Red Cross (Based on PoisonCheck)
+-------------------------------------------------------------------------------
+
+-- 1. Создаем фрейм
+local EzCross = CreateFrame("Frame", "EzPoisonCrossFrame", UIParent)
+EzCross:SetWidth(64)  -- Размер креста
+EzCross:SetHeight(64)
+EzCross:SetPoint("CENTER", 0, 0) -- Строго по центру экрана
+EzCross:SetFrameStrata("HIGH")   -- Поверх других окон
+EzCross:Hide() -- Скрыт по умолчанию
+
+-- 2. Текстура (Красный крест "Отказ от лута" из твоего примера)
+EzCross.texture = EzCross:CreateTexture(nil, "OVERLAY")
+EzCross.texture:SetAllPoints()
+EzCross.texture:SetTexture("Interface\\Buttons\\UI-GroupLoot-Pass-Up")
+
+-- 3. Функция проверки ядов
+local function CheckPoisonLogic()
+    -- Если мертв - скрываем и выходим
+    if UnitIsDeadOrGhost("player") then
+        EzCross:Hide()
+        return
+    end
+
+    -- Получаем данные о ядах
+    -- hasMain/hasOff будут nil, если яда нет
+    local hasMain, _, _, hasOff = GetWeaponEnchantInfo()
+    
+    -- Проверяем, надето ли оружие во второй руке
+    local hasOffHandItem = GetInventoryItemLink("player", 17)
+
+    local showCross = false
+
+    -- Если нет яда на правой руке
+    if (not hasMain) then
+        showCross = true
+    end
+
+    -- Если есть предмет в левой руке, но нет яда
+    if (hasOffHandItem) and (not hasOff) then
+        showCross = true
+    end
+
+    if showCross then
+        EzCross:Show()
+    else
+        EzCross:Hide()
+    end
+end
+
+-- 4. Регистрация событий (Смена оружия, вход в мир, и т.д.)
+EzCross:RegisterEvent("PLAYER_ENTERING_WORLD")
+EzCross:RegisterEvent("UNIT_INVENTORY_CHANGED")
+EzCross:RegisterEvent("PLAYER_AURAS_CHANGED")
+EzCross:RegisterEvent("CHARACTER_POINTS_CHANGED")
+
+-- Обработчик событий
+EzCross:SetScript("OnEvent", function()
+    CheckPoisonLogic()
+end)
+
+-- 5. Таймер (OnUpdate)
+-- События не срабатывают, когда яд просто "заканчивается" по времени.
+-- Поэтому нужен таймер, который проверяет это раз в секунду.
+local timer = 0
+EzCross:SetScript("OnUpdate", function()
+    -- Защита от nil на Turtle WoW
+    local dt = arg1 or 0.1
+    timer = timer + dt
+
+    if timer > 1 then
+        timer = 0
+        CheckPoisonLogic()
+    end
+end)
+
+-- Проверка при загрузке
+DEFAULT_CHAT_FRAME:AddMessage("EzPoison: Red Cross module loaded.")
+CheckPoisonLogic()
